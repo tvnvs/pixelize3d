@@ -1,4 +1,5 @@
 extends ColorRect
+class_name ColorShader
 
 
 @export var mono : ShaderMaterial
