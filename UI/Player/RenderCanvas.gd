@@ -78,7 +78,10 @@ func concatenate_images(buffer):
 	return concat_img
 
 func capture_viewport():
-	var img = after_viewport.get_texture().get_image()
+	var viewport =after_viewport
+	var color_shader: CanvasItem = after_viewport.find_child("ColorShader")
+	if not color_shader.is_visible():
+		viewport = player_viewport
+	var img = viewport.get_texture().get_image()
 	img.convert(Image.FORMAT_RGBA8)
 	return img
-
