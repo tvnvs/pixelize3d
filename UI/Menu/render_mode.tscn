@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://do4884r02sugm"]
 
-[ext_resource type="Script" path="res://render mode.gd" id="1_bvm1o"]
+[ext_resource type="Script" uid="uid://cpp3t3myaclrc" path="res://render mode.gd" id="1_bvm1o"]
 
 [node name="render mode" type="MenuButton"]
 text = "Render Mode"

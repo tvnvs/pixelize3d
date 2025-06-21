@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cq03c8lxhl22t"]
 
-[ext_resource type="Script" path="res://MenuButton.gd" id="1_o3wpi"]
+[ext_resource type="Script" uid="uid://b4m12prynakb5" path="res://MenuButton.gd" id="1_o3wpi"]
 
 [node name="MenuButton" type="MenuButton"]
 size_flags_horizontal = 0

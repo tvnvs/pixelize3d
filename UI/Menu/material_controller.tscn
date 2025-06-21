@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bcqikq1wfgete"]
 
-[ext_resource type="Script" path="res://UI/Menu/material_controller.gd" id="1_poxsr"]
+[ext_resource type="Script" uid="uid://du7obyflp030o" path="res://UI/Menu/material_controller.gd" id="1_poxsr"]
 
 [node name="material_conntroller" type="Control"]
 layout_mode = 3

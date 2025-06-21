@@ -1,18 +1,18 @@
 [gd_scene load_steps=16 format=3 uid="uid://7cj62niu6y0m"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_kmhnd"]
+[ext_resource type="Script" uid="uid://jd34kvo3xbma" path="res://main.gd" id="1_kmhnd"]
 [ext_resource type="PackedScene" uid="uid://cq03c8lxhl22t" path="res://UI/Menu/menu_button.tscn" id="2_1xgvu"]
-[ext_resource type="Script" path="res://UI/Player/RenderCanvas.gd" id="3_3p1yt"]
+[ext_resource type="Script" uid="uid://x2v6oqsje4d7" path="res://UI/Player/RenderCanvas.gd" id="3_3p1yt"]
 [ext_resource type="PackedScene" uid="uid://c66khec1ryedj" path="res://InputTransform.tscn" id="4_43vby"]
 [ext_resource type="PackedScene" uid="uid://bk6kchpbd5gk3" path="res://Scenes/player.tscn" id="5_8pnex"]
 [ext_resource type="PackedScene" uid="uid://bcqikq1wfgete" path="res://UI/Menu/material_controller.tscn" id="5_46gs8"]
-[ext_resource type="Script" path="res://ColorShader.gd" id="6_5x4h5"]
+[ext_resource type="Script" uid="uid://d4lj27l7v5era" path="res://ColorShader.gd" id="6_5x4h5"]
 [ext_resource type="Material" uid="uid://b13lqyfyyffyj" path="res://materials/final_Mono.tres" id="7_4jwf4"]
 [ext_resource type="Material" uid="uid://ba14cyrfsfjxj" path="res://materials/final_no_palette.tres" id="8_o1sgo"]
 [ext_resource type="Material" uid="uid://bcwgcxdp2nt3r" path="res://materials/normal_material.tres" id="9_537xl"]
 [ext_resource type="Material" uid="uid://cuoco475c4pl" path="res://materials/final_palette.tres" id="9_j15ki"]
-[ext_resource type="Script" path="res://render mode.gd" id="11_clve7"]
-[ext_resource type="Script" path="res://MenuButton.gd" id="12_rfjv1"]
+[ext_resource type="Script" uid="uid://cpp3t3myaclrc" path="res://render mode.gd" id="11_clve7"]
+[ext_resource type="Script" uid="uid://b4m12prynakb5" path="res://MenuButton.gd" id="12_rfjv1"]
 
 [sub_resource type="Environment" id="Environment_ilbuc"]
 background_mode = 1
@@ -145,13 +145,16 @@ text = "512x512"
 custom_minimum_size = Vector2(425, 150)
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
 
 [node name="Animation" type="CenterContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/TabContainer2"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="AnimationTree" type="CenterContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/TabContainer2"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer"]
 custom_minimum_size = Vector2(500, 0)
@@ -246,8 +249,8 @@ layout_mode = 2
 text = "Search"
 
 [node name="PlayAnimation" type="Button" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
-auto_translate = false
 action_mode = 0
 text = "PlayAnimation"
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c66khec1ryedj"]
 
-[ext_resource type="Script" path="res://InputTransform.gd" id="1_sty6c"]
+[ext_resource type="Script" uid="uid://bmi54hevywr3" path="res://InputTransform.gd" id="1_sty6c"]
 
 [node name="InputTransform" type="HBoxContainer"]
 custom_minimum_size = Vector2(60, 40)
