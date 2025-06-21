@@ -75,6 +75,7 @@ func _on_model_load_triggered(path : String):
 		node.transform = player_node.transform
 		
 		var node_parent = player_node.get_parent()
+		player_node.name = "OldPlayer"
 		player_node.queue_free()
 		
 		node_parent.add_child(node)
