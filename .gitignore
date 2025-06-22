@@ -2,3 +2,10 @@
 .godot/
 *.import
 *.tmp
+
+# Rider Settings
+.idea
+
+# Test Filest
+test.*
+test/
