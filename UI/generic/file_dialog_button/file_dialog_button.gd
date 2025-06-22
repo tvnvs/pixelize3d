@@ -1,11 +1,15 @@
 extends MenuButton
+class_name FileDialogButton
 
-@onready var file_dialog = $FileDialog
+@onready var file_dialog: FileDialog = $FileDialog
 signal model_load_triggered(path)
 
+
 func _ready():
-	var popup = get_popup() 
+	var popup = get_popup()
 	popup.connect("id_pressed", file_menu)
+	file_dialog.set_current_dir(ProjectManager.default_dir)
+
 
 func file_menu(id):
 	match id:
@@ -30,8 +34,6 @@ func file_menu(id):
 func get_dir():
 	file_dialog.show()
 
+
 func _on_load_model_file_dialog_file_selected(path):
 	emit_signal("model_load_triggered", path)
-
-
-

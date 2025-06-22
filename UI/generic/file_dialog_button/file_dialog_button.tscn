@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://cq03c8lxhl22t"]
 
-[ext_resource type="Script" uid="uid://b4m12prynakb5" path="res://UI/generic/menu_button/menu_button.gd" id="1_o3wpi"]
+[ext_resource type="Script" uid="uid://b4m12prynakb5" path="res://UI/generic/file_dialog_button/file_dialog_button.gd" id="1_o3wpi"]
 
-[node name="MenuButton" type="MenuButton"]
+[node name="FileDialogButton" type="MenuButton"]
 size_flags_horizontal = 0
 text = "File"
 item_count = 2

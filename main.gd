@@ -1,5 +1,7 @@
 extends Control
 
+
+
 @export var file_button_path: NodePath
 @export var menu_button_path: NodePath
 
@@ -16,6 +18,8 @@ func _ready():
 
 	var c: Callable = Callable(self, "file_drop_path")
 	get_tree().get_root().connect('files_dropped', c)
+	
+
 
 
 func _on_model_load_triggered(path: String):

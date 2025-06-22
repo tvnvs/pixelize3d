@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bu6ghsc6p3e5c"]
 
 [ext_resource type="Script" uid="uid://c244l41s866it" path="res://UI/Menu/render_controller/render_controller.gd" id="1_jmhxn"]
-[ext_resource type="Script" uid="uid://b4m12prynakb5" path="res://UI/generic/menu_button/menu_button.gd" id="2_wmmsh"]
+[ext_resource type="Script" uid="uid://b4m12prynakb5" path="res://UI/generic/file_dialog_button/file_dialog_button.gd" id="2_wmmsh"]
 
 [node name="RenderOptions" type="VBoxContainer"]
 theme_override_constants/separation = 10
