@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bwmj0fv2jcdwx"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bwmj0fv2jcdwx"]
 
 [ext_resource type="Texture2D" uid="uid://dwlg135fhac0l" path="res://Assets/Palettes/pokemon-ruby-sapphire-exterior-1x.png" id="1_ld8cq"]
 
@@ -41,12 +41,8 @@ void fragment()
 "
 metadata/_edit_res_path = "res://materials/Color_palette.tres::Shader_4u2f0"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_f6up4"]
-viewport_path = NodePath("first_render/Viewport")
-
 [resource]
 resource_local_to_scene = true
 shader = SubResource("Shader_4u2f0")
 shader_parameter/palette = ExtResource("1_ld8cq")
-shader_parameter/screen_texture = SubResource("ViewportTexture_f6up4")
 shader_parameter/alpha_thresh = 0.1

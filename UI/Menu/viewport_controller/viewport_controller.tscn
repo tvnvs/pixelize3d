@@ -16,18 +16,81 @@ text = "Viewport Changes"
 [node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2
 
-[node name="PlayerPosition" parent="." instance=ExtResource("1_wf5nn")]
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 2
+current_tab = 1
+
+[node name="Model" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="PlayerPosition" parent="TabContainer/Model" instance=ExtResource("1_wf5nn")]
+unique_name_in_owner = true
 layout_mode = 2
 transformName = "Position"
 
-[node name="PlayerRotation" parent="." instance=ExtResource("1_wf5nn")]
+[node name="PlayerRotation" parent="TabContainer/Model" instance=ExtResource("1_wf5nn")]
+unique_name_in_owner = true
 layout_mode = 2
 transformName = "Rotation"
 
-[node name="PlayerScale" parent="." instance=ExtResource("1_wf5nn")]
+[node name="PlayerScale" parent="TabContainer/Model" instance=ExtResource("1_wf5nn")]
+unique_name_in_owner = true
 layout_mode = 2
 transformName = "Scale"
 
-[connection signal="transformChanged" from="PlayerPosition" to="." method="_on_position_transform_changed"]
-[connection signal="transformChanged" from="PlayerRotation" to="." method="_on_rotation_transform_changed"]
-[connection signal="transformChanged" from="PlayerScale" to="." method="_on_scale_transform_changed"]
+[node name="Camera" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Label" type="Label" parent="TabContainer/Camera"]
+layout_mode = 2
+text = "Presets"
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Camera"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TabContainer/Camera"]
+layout_mode = 2
+
+[node name="FrontViewPreset" type="Button" parent="TabContainer/Camera/HBoxContainer2"]
+layout_mode = 2
+text = "Front View"
+
+[node name="IsometricPreset35" type="Button" parent="TabContainer/Camera/HBoxContainer2"]
+layout_mode = 2
+text = "Isometric (35.56º)"
+
+[node name="IsometricPreset45" type="Button" parent="TabContainer/Camera/HBoxContainer2"]
+layout_mode = 2
+text = "Isometric (45º)"
+
+[node name="Label2" type="Label" parent="TabContainer/Camera"]
+layout_mode = 2
+text = "Manual"
+
+[node name="HSeparator2" type="HSeparator" parent="TabContainer/Camera"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Camera"]
+layout_mode = 2
+
+[node name="CameraPosition" parent="TabContainer/Camera" instance=ExtResource("1_wf5nn")]
+unique_name_in_owner = true
+layout_mode = 2
+transformName = "Position"
+
+[node name="CameraRotation" parent="TabContainer/Camera" instance=ExtResource("1_wf5nn")]
+unique_name_in_owner = true
+layout_mode = 2
+transformName = "Rotation"
+
+[connection signal="transformChanged" from="TabContainer/Model/PlayerPosition" to="." method="_on_position_transform_changed"]
+[connection signal="transformChanged" from="TabContainer/Model/PlayerRotation" to="." method="_on_rotation_transform_changed"]
+[connection signal="transformChanged" from="TabContainer/Model/PlayerScale" to="." method="_on_scale_transform_changed"]
+[connection signal="button_down" from="TabContainer/Camera/HBoxContainer2/FrontViewPreset" to="." method="_on_front_view_preset_button_down"]
+[connection signal="button_down" from="TabContainer/Camera/HBoxContainer2/IsometricPreset35" to="." method="_on_isometric_preset_35_button_down"]
+[connection signal="button_down" from="TabContainer/Camera/HBoxContainer2/IsometricPreset45" to="." method="_on_isometric_preset_45_button_down"]
+[connection signal="transformChanged" from="TabContainer/Camera/CameraPosition" to="." method="_on_camera_position_transform_changed"]
+[connection signal="transformChanged" from="TabContainer/Camera/CameraRotation" to="." method="_on_camera_rotation_transform_changed"]

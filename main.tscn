@@ -258,6 +258,8 @@ normal = SubResource("ShaderMaterial_efxa6")
 [node name="RenderOptions" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("6_7mycd")]
 layout_mode = 2
 
+[connection signal="camera_position_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_camera_position_changed"]
+[connection signal="camera_rotation_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_camera_rotation_changed"]
 [connection signal="player_position_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_position_changed"]
 [connection signal="player_rotation_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_rotation_changed"]
 [connection signal="player_scale_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_scale_changed"]

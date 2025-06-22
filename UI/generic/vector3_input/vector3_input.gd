@@ -23,19 +23,22 @@ func _set_transform(value):
 func _get_transform():
 	return transform
 
+func _send_signal_changed():
+	transformChanged.emit(transform)
+	
 func _on_scale_x_text_submitted(new_text):
 	transform.x = float(new_text)
 	transform_x.text = new_text
-	emit_signal("transformChanged",transform)
+	_send_signal_changed()
 
 func _on_scale_y_text_submitted(new_text):
 	transform.y = float(new_text)
 	transform_y.text = new_text
-	emit_signal("transformChanged",transform)
+	_send_signal_changed()
 
 func _on_scale_z_text_submitted(new_text):
 	transform.z = float(new_text)
 	transform_z.text = new_text
-	emit_signal("transformChanged",transform)
+	_send_signal_changed()
 
 

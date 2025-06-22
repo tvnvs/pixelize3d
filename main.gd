@@ -15,6 +15,7 @@ var file_button: MenuButton
 var menu_button : MenuButton
 
 var player_node: Node3D
+var camera_node: Node3D
 var color_shader: ColorRect
 var player_transform: Node3D
 
@@ -28,6 +29,7 @@ func _ready():
 	
 	color_shader = player_canvas.find_child("ColorShader")
 	player_node = player_canvas.find_child("Player")
+	camera_node = player_canvas.find_child("Camera3D")
 	file_button.connect("model_load_triggered", _on_model_load_triggered)
 	
 	player_transform = player_canvas.find_child("Player")
@@ -35,6 +37,7 @@ func _ready():
 	var c = Callable(self,"file_drop_path")
 	get_tree().get_root().connect('files_dropped',c)
 	update_player_transform(player_node)
+	update_camera_transform(camera_node)
 
 func _on_background_shader_toggled(button_pressed):
 	if not button_pressed:
@@ -62,11 +65,14 @@ func _on_model_load_triggered(path : String):
 		update_player_transform(node)
 
 
-func update_player_transform(node):
-	player_transform = node as Node3D
+func update_player_transform(player_transform: Node3D):
 	viewport_options.set_player_position(player_transform.position)
 	viewport_options.set_player_rotation_degrees(player_transform.rotation_degrees)
 	viewport_options.set_player_scale(player_transform.scale)
+
+func update_camera_transform(node: Node3D):
+	viewport_options.set_camera_position(node.position)
+	viewport_options.set_camera_rotation(node.rotation_degrees)
 
 func file_drop_path(files):
 	_on_model_load_triggered(files[0])

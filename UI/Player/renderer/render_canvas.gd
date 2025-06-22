@@ -10,7 +10,7 @@ var state               = 'one'
 @onready var player_node = $first_render/Viewport/Player
 @onready var color_shader_node: ColorShader = %ColorShader
 @onready var viewport_texture: ViewportTexture = player_viewport.get_texture()
-@onready var color_shader: CanvasItem = after_viewport.find_child("ColorShader")
+@onready var camera_node: Camera3D = %Camera3D
 
 
 func render(outpu_dir: String):
@@ -99,7 +99,7 @@ func concatenate_images(buffer):
 
 func capture_viewport():
 	var viewport                 = after_viewport
-	if not color_shader.is_visible():
+	if not color_shader_node.is_visible():
 		viewport = player_viewport
 	var img = viewport.get_texture().get_image()
 	img.convert(Image.FORMAT_RGBA8)
@@ -121,9 +121,16 @@ func _on_viewport_options_player_rotation_changed(_transform: Vector3) -> void:
 func _on_viewport_options_player_scale_changed(_transform: Vector3) -> void:
 	player_node.scale = _transform
 
+func _on_viewport_options_camera_position_changed(_transform: Vector3) -> void:
+	camera_node.position = _transform
+
+func _on_viewport_options_camera_rotation_changed(_transform: Vector3) -> void:
+	camera_node.rotation_degrees = _transform
 
 func _on_render_options_render_start(output_dir: String) -> void:
 	render(output_dir)
+
+
 
 
 
@@ -136,6 +143,6 @@ func _on_material_conntroller_material_changed(_material: ShaderMaterial, debug_
 
 func _on_material_conntroller_color_shader_active(is_active: bool) -> void:
 	if is_active:
-		color_shader.show()
+		color_shader_node.show()
 	else:
-		color_shader.hide()
+		color_shader_node.hide()

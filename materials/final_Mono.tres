@@ -32,7 +32,6 @@ void fragment(){
 metadata/_edit_res_path = "res://materials/final_Mono.tres::Shader_v7tjv"
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_3ywre"]
-viewport_path = NodePath("first_render/Viewport")
 
 [resource]
 resource_local_to_scene = true
