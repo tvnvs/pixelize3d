@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://7cj62niu6y0m"]
+[gd_scene load_steps=17 format=3 uid="uid://7cj62niu6y0m"]
 
 [ext_resource type="Script" uid="uid://jd34kvo3xbma" path="res://main.gd" id="1_kmhnd"]
 [ext_resource type="PackedScene" uid="uid://cq03c8lxhl22t" path="res://UI/generic/menu_button/menu_button.tscn" id="2_1xgvu"]
@@ -38,13 +38,9 @@ void fragment(){
 }"
 metadata/_edit_res_path = "res://materials/final_Mono.tres::Shader_v7tjv"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_7mycd"]
-viewport_path = NodePath("first_render/Viewport")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_272bh"]
 resource_local_to_scene = true
 shader = SubResource("Shader_v7tjv")
-shader_parameter/view = SubResource("ViewportTexture_7mycd")
 shader_parameter/limit = 32.0
 shader_parameter/thresh = 0.5
 
@@ -76,13 +72,9 @@ void fragment(){
 }"
 metadata/_edit_res_path = "res://main.tscn::Shader_4u2f0"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_5vw27"]
-viewport_path = NodePath("first_render/Viewport")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kek77"]
 resource_local_to_scene = true
 shader = SubResource("Shader_4u2f0")
-shader_parameter/view = SubResource("ViewportTexture_5vw27")
 shader_parameter/limit = 32.0
 shader_parameter/thresh = 0.5
 
@@ -125,7 +117,7 @@ void fragment()
 "
 metadata/_edit_res_path = "res://materials/final_palette.tres::Shader_ovm27"
 
-[sub_resource type="Image" id="Image_k3mjd"]
+[sub_resource type="Image" id="Image_7mycd"]
 data = {
 "data": PackedByteArray(0, 0, 0, 131, 131, 139, 222, 230, 238, 255, 255, 255, 123, 65, 65, 131, 90, 90, 156, 115, 115, 164, 164, 164, 189, 189, 189, 213, 213, 213, 197, 65, 65, 255, 98, 90, 222, 106, 98, 106, 90, 90, 164, 98, 90, 189, 148, 139, 222, 180, 164, 238, 213, 205, 238, 148, 115, 222, 148, 115, 255, 189, 131, 255, 197, 148, 255, 213, 180, 65, 57, 49, 205, 156, 82, 255, 197, 90, 189, 156, 90, 213, 180, 106, 189, 189, 131, 222, 205, 131, 238, 230, 164, 57, 82, 0, 57, 139, 49, 131, 197, 98, 180, 255, 131, 24, 164, 106, 65, 180, 131, 115, 197, 164, 164, 213, 197, 82, 139, 197, 98, 172, 238, 115, 189, 246, 16, 32, 57, 24, 41, 82, 41, 57, 98, 74, 115, 172, 98, 164, 222, 41, 49, 90, 57, 74, 123, 156, 180, 222, 189, 205, 230, 65, 74, 106, 98, 98, 123, 65, 49, 65, 98, 65, 82, 205, 65, 82),
 "format": "RGB8",
@@ -135,7 +127,7 @@ data = {
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_750vi"]
-image = SubResource("Image_k3mjd")
+image = SubResource("Image_7mycd")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4c57u"]
 resource_local_to_scene = true
