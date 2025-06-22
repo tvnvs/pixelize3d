@@ -35,7 +35,7 @@ transform = Transform3D(0.5, -0.75, 0.433013, 0, 0.5, 0.866025, -0.866025, -0.43
 
 [node name="Camera3D" type="Camera3D" parent="first_render/Viewport"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.511, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.687425, 2)
 projection = 1
 size = 2.0
 near = 0.01
@@ -67,3 +67,5 @@ anchor_mode = 0
 
 [node name="palette" type="Sprite2D" parent="."]
 position = Vector2(11, 502)
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]

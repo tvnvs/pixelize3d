@@ -4,6 +4,8 @@ class_name RenderCanvas
 signal player_node_transform_changed(new_player_node_transform: TransformProperties)
 signal camera_node_transform_changed(new_camera_node_transform: TransformProperties)
 signal player_node_animations_changed(new_animation_names: Array[String])
+const MOUSE_BUTTON_MASK_WHEEL_UP: int   = 8
+const MOUSE_BUTTON_MASK_WHEEL_DOWN: int = 16
 
 
 class TransformProperties:
@@ -19,8 +21,12 @@ class TransformProperties:
 
 
 
-
-
+enum ViewportEditType{
+	PLAYER_POSITION,
+	PLAYER_ROTATION,
+	PLAYER_SCALE,
+	CAMERA
+}
 @export var fps: int = 16
 
 var frames_per_row: int = 25
@@ -34,15 +40,26 @@ var state               = 'one'
 @onready var viewport_texture = player_viewport.get_texture()
 
 var animation_player: AnimationPlayer
+## Edit Viewport Vars
+var viewport_edit_mode: bool = false
+var viewport_edit_type: ViewportEditType
+var viewport_lock_x: bool    = false
+var viewport_lock_y: bool    = false
+var viewport_reset_pos: bool = false
+var viewport_initial_position: Vector3
+var viewport_position_restore: Vector3
+
 
 func _ready() -> void:
 	_update_player_references($first_render/Viewport/Player)
 	_emit_player_node_changes()
 	_emit_camera_node_changes()
 
+
 func _update_player_references(new_player_node: Node3D):
 	player_node = new_player_node
 	animation_player = player_node.find_child("AnimationPlayer")
+
 
 func render(outpu_dir: String):
 	var arr: Array = await get_all_animation_frames()
@@ -54,7 +71,8 @@ func render(outpu_dir: String):
 		img = images[i]
 		var path = outpu_dir + anime_names[i] + ".png"
 		img.save_png(path)
-		
+
+
 func get_all_animation_frames():
 	var animation_names: Array
 	var img_array: Array
@@ -151,12 +169,15 @@ func load_new_player_model(new_model_path: String) -> Node3D:
 		node_parent.add_child(node)
 		node.set_owner(node_parent)
 		node.name = "Player"
-		
+
 		_update_player_references(node)
 		_emit_player_node_changes()
 		return node
 	return null
 
+
+func play_animation(animation_name: String):
+	animation_player.play(animation_name)
 
 
 # Event Emmiting
@@ -164,17 +185,177 @@ func _emit_player_node_changes():
 	player_node_transform_changed.emit(TransformProperties.new(player_node.position, player_node.rotation_degrees, player_node.scale))
 	player_node_animations_changed.emit(animation_player.get_animation_list())
 
+
 func _emit_camera_node_changes():
 	camera_node_transform_changed.emit(TransformProperties.new(camera_node.position, camera_node.rotation_degrees, camera_node.scale))
-	
-# Event Recieving
+
+
+# Edit Viewport Functions
+func _enter_edit_mode(button_mask: int, capture_mouse: bool = true):
+	viewport_edit_mode = true
+	if capture_mouse:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	match button_mask:
+		MOUSE_BUTTON_MASK_LEFT: viewport_edit_type=ViewportEditType.PLAYER_POSITION
+		MOUSE_BUTTON_MASK_RIGHT: viewport_edit_type=ViewportEditType.PLAYER_ROTATION
+		MOUSE_BUTTON_WHEEL_UP or MOUSE_BUTTON_WHEEL_DOWN: viewport_edit_type=ViewportEditType.PLAYER_SCALE
+		MOUSE_BUTTON_MASK_MIDDLE: viewport_edit_type=ViewportEditType.CAMERA
+
+	if viewport_edit_type == ViewportEditType.PLAYER_POSITION:
+		viewport_initial_position = Vector3(player_node.position)
+	elif viewport_edit_type == ViewportEditType.PLAYER_ROTATION:
+		viewport_initial_position = Vector3(player_node.rotation)
+	elif viewport_edit_type == ViewportEditType.PLAYER_SCALE:
+		viewport_initial_position = Vector3(player_node.scale)
+	elif viewport_edit_type == ViewportEditType.CAMERA:
+		viewport_initial_position = Vector3(camera_node.position)
+
+	print("Enter Edit Mode(%d)" % viewport_edit_type)
+
+
+func _exit_edit_mode():
+	print("Exit Edit Mode(%d)" % viewport_edit_type)
+	viewport_edit_mode = false
+
+	if Input.get_mouse_mode() != Input.MOUSE_MODE_VISIBLE:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+	viewport_initial_position = Vector3.ZERO
+	_emit_player_node_changes()
+	_emit_camera_node_changes()
+
+
+func _edit_rest_player_position():
+	if viewport_edit_type == ViewportEditType.PLAYER_POSITION:
+		viewport_position_restore = Vector3(player_node.position)
+		player_node.position = viewport_initial_position
+	elif viewport_edit_type == ViewportEditType.PLAYER_ROTATION:
+		viewport_position_restore = Vector3(player_node.rotation)
+		player_node.rotation = viewport_initial_position
+	elif viewport_edit_type == ViewportEditType.PLAYER_SCALE:
+		viewport_position_restore = Vector3(player_node.rotation)
+		player_node.scale = viewport_initial_position
+	elif viewport_edit_type == ViewportEditType.CAMERA:
+		viewport_position_restore = Vector3(camera_node.position)
+		camera_node.position = viewport_initial_position
+
+
+func _edit_restore_player_position():
+	if viewport_edit_type == ViewportEditType.PLAYER_POSITION:
+		player_node.position = viewport_position_restore
+	elif viewport_edit_type == ViewportEditType.PLAYER_ROTATION:
+		player_node.rotation = viewport_position_restore
+	elif viewport_edit_type == ViewportEditType.PLAYER_SCALE:
+		player_node.scale = viewport_position_restore
+	elif viewport_edit_type == ViewportEditType.CAMERA:
+		camera_node.position = viewport_position_restore
+
+
+func _check_for_postion_lock():
+	var is_x_or_y_lock_on   = viewport_lock_x or viewport_lock_y
+	var is_lock_key_pressed = Input.is_key_pressed(KEY_ALT)
+
+	if is_x_or_y_lock_on and is_lock_key_pressed and not viewport_reset_pos:
+		viewport_reset_pos = true
+		_edit_rest_player_position()
+	elif not is_lock_key_pressed and viewport_reset_pos:
+		viewport_reset_pos = false
+		_edit_restore_player_position()
+
+
+# Event Handling (Internal)
+func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var is_mouse_wheel: bool = event.button_mask == MOUSE_BUTTON_MASK_WHEEL_UP or event.button_mask == MOUSE_BUTTON_MASK_WHEEL_DOWN
+		if is_mouse_wheel:
+			_handle_scale_player(event)
+		else:
+			_handle_mouse_button_event(event)
+	elif event is InputEventMouseMotion:
+		_handle_mouse_motion_event(event)
+
+
+func _input(event: InputEvent) -> void:
+	if not event is InputEventKey:
+		return
+
+	if event.keycode == KEY_ESCAPE and viewport_edit_mode:
+		_exit_edit_mode()
+	elif event.keycode == KEY_SHIFT:
+		if event.is_pressed():
+			viewport_lock_x = true
+		else:
+			viewport_lock_x = false
+	elif event.keycode == KEY_CTRL:
+		if event.is_pressed():
+			viewport_lock_y = true
+		else:
+			viewport_lock_y = false
+
+	_check_for_postion_lock()
+
+
+func _handle_scale_player(event: InputEventMouse) -> void:
+	var speed: float   = 0.02
+	var direction: int = 1 if event.button_mask == MOUSE_BUTTON_MASK_WHEEL_UP else -1
+	_enter_edit_mode(event.button_mask, false)
+	player_node.scale += Vector3(1, 1, 1)  * speed * direction
+	_exit_edit_mode()
+
+
+func _handle_mouse_button_event(event: InputEventMouseButton):
+	if event.pressed:
+		_enter_edit_mode(event.get_button_mask())
+	elif not event.pressed:
+		_exit_edit_mode()
+
+
+func _handle_mouse_motion_event(event: InputEventMouseMotion):
+	if not viewport_edit_mode:
+		return
+	var direction: Vector2 = event.relative.normalized()
+	var speed: float       = 0.02
+	var x: float           = 0.0 if viewport_lock_x else direction.x
+	var y: float           = 0.0 if viewport_lock_y else -direction.y
+
+	var move_vector: Vector3 = Vector3(x, y, 0) * speed
+	print(move_vector)
+	if viewport_edit_type == ViewportEditType.PLAYER_POSITION:
+		player_node.position += move_vector
+	elif viewport_edit_type == ViewportEditType.PLAYER_ROTATION:
+		player_node.rotation += Vector3(move_vector.y, move_vector.x, 0)
+	elif viewport_edit_type == ViewportEditType.CAMERA:
+		var camera_angle_x_deg: float     = camera_node.rotation_degrees.x
+		var camera_angle_y_deg: float     = camera_node.rotation_degrees.y
+		var new_camera_angle_x_deg: float = clamp(camera_angle_x_deg + (1 * y), -89, 89)
+		var new_camera_angle_y_deg: float = clamp(camera_angle_y_deg + (1 * x), -89, 89)
+#		var new_camera_angle_y_deg: float = 5.5
+		
+		var camera_height: float   = camera_node.position.y
+		var camera_distance: float = camera_node.position.z
+
+		var hipotenuse: float    = camera_distance / cos(deg_to_rad(new_camera_angle_x_deg))
+		var new_value: float     = sqrt(hipotenuse*hipotenuse - camera_distance*camera_distance)
+		var player_height: float = 0
+
+		camera_node.rotation_degrees.x = new_camera_angle_x_deg
+		camera_node.position.y = (new_value if new_camera_angle_x_deg <0 else -new_value) + player_height
+		camera_height = new_value
+
+
+#		camera_node.look_at(player_node.position, rot)
+
+
+# Event Handling (External)
 func _on_render_options_render_state_changed(new_state: String) -> void:
 	state = new_state
-	
+
+
 func _on_viewport_options_player_transform_changed(_transform: TransformProperties) -> void:
 	player_node.position = _transform.position
 	player_node.rotation_degrees = _transform.rotation_deg
 	player_node.scale = _transform.scale
+
 
 func _on_viewport_options_camera_transform_changed(_transform: TransformProperties) -> void:
 	camera_node.position = _transform.position
@@ -185,7 +366,6 @@ func _on_material_conntroller_material_changed(_material: ShaderMaterial, debug_
 	_material.set_shader_parameter("view", viewport_texture)
 	color_shader_node.material = _material
 	player_viewport.debug_draw = debug_draw
-	
 
 
 func _on_material_conntroller_color_shader_active(is_active: bool) -> void:
@@ -197,3 +377,7 @@ func _on_material_conntroller_color_shader_active(is_active: bool) -> void:
 
 func _on_render_options_render_start(output_dir: String) -> void:
 	render(output_dir)
+
+
+func _on_animation_controller_play_animation(animation_name: String) -> void:
+	play_animation(animation_name)

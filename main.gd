@@ -5,7 +5,7 @@ extends Control
 @export var file_button_path: NodePath
 @export var menu_button_path: NodePath
 
-@onready var viewport_options: ViewportController = %ViewportOptions
+@onready var viewport_options: ViewportController = %ViewportController
 @onready var render_canvas: RenderCanvas = %RenderCanvas
 @onready var file_button: MenuButton = %FileButton
 
