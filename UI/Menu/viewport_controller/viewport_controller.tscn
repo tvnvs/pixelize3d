@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://pyshfx6b4diu"]
+
+[ext_resource type="Script" uid="uid://f4axa58r47s4" path="res://UI/Menu/viewport_controller/viewport_controller.gd" id="1_vthlj"]
+[ext_resource type="PackedScene" uid="uid://c66khec1ryedj" path="res://UI/generic/vector3_input/vector3_input.tscn" id="1_wf5nn"]
+
+[node name="ViewportOptions" type="VBoxContainer"]
+theme_override_constants/separation = 10
+script = ExtResource("1_vthlj")
+
+[node name="TransformLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(333, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Viewport Changes"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="PlayerPosition" parent="." instance=ExtResource("1_wf5nn")]
+layout_mode = 2
+transformName = "Position"
+
+[node name="PlayerRotation" parent="." instance=ExtResource("1_wf5nn")]
+layout_mode = 2
+transformName = "Rotation"
+
+[node name="PlayerScale" parent="." instance=ExtResource("1_wf5nn")]
+layout_mode = 2
+transformName = "Scale"
+
+[connection signal="transformChanged" from="PlayerPosition" to="." method="_on_position_transform_changed"]
+[connection signal="transformChanged" from="PlayerRotation" to="." method="_on_rotation_transform_changed"]
+[connection signal="transformChanged" from="PlayerScale" to="." method="_on_scale_transform_changed"]

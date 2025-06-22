@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bcwgcxdp2nt3r"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bcwgcxdp2nt3r"]
 
-[sub_resource type="Shader" id="Shader_ia18y"]
+[sub_resource type="Shader" id="Shader_8i06e"]
 code = "shader_type canvas_item;
 
 uniform sampler2D view : repeat_disable, filter_nearest;
@@ -20,11 +20,7 @@ void fragment(){
 }"
 metadata/_edit_res_path = "res://materials/normal_material.tres::Shader_ia18y"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_d5yyi"]
-viewport_path = NodePath("Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/Renderscene/first_render/Viewport")
-
 [resource]
 resource_local_to_scene = true
-shader = SubResource("Shader_ia18y")
-shader_parameter/view = SubResource("ViewportTexture_d5yyi")
+shader = SubResource("Shader_8i06e")
 shader_parameter/thresh = 0.5

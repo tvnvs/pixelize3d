@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bwmj0fv2jcdwx"]
 
-[ext_resource type="Texture2D" uid="uid://dkykm7duw84kf" path="res://Assets/Palettes/pokemon-ruby-sapphire-exterior-1x.png" id="1_ld8cq"]
+[ext_resource type="Texture2D" uid="uid://dwlg135fhac0l" path="res://Assets/Palettes/pokemon-ruby-sapphire-exterior-1x.png" id="1_ld8cq"]
 
 [sub_resource type="Shader" id="Shader_4u2f0"]
 code = "shader_type canvas_item;
@@ -47,6 +47,6 @@ viewport_path = NodePath("first_render/Viewport")
 [resource]
 resource_local_to_scene = true
 shader = SubResource("Shader_4u2f0")
-shader_parameter/alpha_thresh = 0.1
 shader_parameter/palette = ExtResource("1_ld8cq")
 shader_parameter/screen_texture = SubResource("ViewportTexture_f6up4")
+shader_parameter/alpha_thresh = 0.1

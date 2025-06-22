@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://c66khec1ryedj"]
+
+[ext_resource type="Script" uid="uid://bmi54hevywr3" path="res://UI/generic/vector3_input/vector3_input.gd" id="1_02ch3"]
+
+[node name="Vector3Input" type="HBoxContainer"]
+custom_minimum_size = Vector2(60, 40)
+script = ExtResource("1_02ch3")
+
+[node name="VectorLabel" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Scale"
+
+[node name="LabelX" type="Label" parent="."]
+layout_mode = 2
+text = "X"
+
+[node name="ScaleX" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "0"
+
+[node name="LabelY" type="Label" parent="."]
+layout_mode = 2
+text = "Y"
+
+[node name="ScaleY" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "0"
+
+[node name="LabelZ" type="Label" parent="."]
+layout_mode = 2
+text = "Z"
+
+[node name="ScaleZ" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "0"
+
+[connection signal="text_submitted" from="ScaleX" to="." method="_on_scale_x_text_submitted"]
+[connection signal="text_submitted" from="ScaleY" to="." method="_on_scale_y_text_submitted"]
+[connection signal="text_submitted" from="ScaleZ" to="." method="_on_scale_z_text_submitted"]

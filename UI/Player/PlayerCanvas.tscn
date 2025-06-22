@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://drvvnirtyvu6g"]
 
-[ext_resource type="Script" uid="uid://x2v6oqsje4d7" path="res://UI/Player/RenderCanvas.gd" id="1_4j3xu"]
-[ext_resource type="PackedScene" uid="uid://bk6kchpbd5gk3" path="res://Scenes/player.tscn" id="1_icvxo"]
+[ext_resource type="Script" uid="uid://x2v6oqsje4d7" path="res://UI/Player/renderer/render_canvas.gd" id="1_4j3xu"]
+[ext_resource type="PackedScene" uid="uid://bk6kchpbd5gk3" path="res://UI/Player/player.tscn" id="1_icvxo"]
 [ext_resource type="Material" uid="uid://b7pieppb5crkh" path="res://materials/Color_palette.tres" id="3_rhg45"]
 
 [sub_resource type="Environment" id="Environment_ilbuc"]

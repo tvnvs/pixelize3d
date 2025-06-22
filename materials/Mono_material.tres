@@ -37,6 +37,6 @@ viewport_path = NodePath("Mount/MarginContainer/MainWindow/HSplitContainer/VSpli
 [resource]
 resource_local_to_scene = true
 shader = SubResource("Shader_v7tjv")
+shader_parameter/view = SubResource("ViewportTexture_3ywre")
 shader_parameter/limit = 32.0
 shader_parameter/thresh = 0.5
-shader_parameter/view = SubResource("ViewportTexture_3ywre")
