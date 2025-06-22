@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cccn4mrilxa6b"]
+
+[node name="AnimationController" type="TabContainer"]
+custom_minimum_size = Vector2(425, 150)
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Animation" type="CenterContainer" parent="."]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="AnimationTree" type="CenterContainer" parent="."]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1

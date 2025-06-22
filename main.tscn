@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://7cj62niu6y0m"]
+[gd_scene load_steps=18 format=3 uid="uid://7cj62niu6y0m"]
 
 [ext_resource type="Script" uid="uid://jd34kvo3xbma" path="res://main.gd" id="1_kmhnd"]
 [ext_resource type="PackedScene" uid="uid://cq03c8lxhl22t" path="res://UI/generic/menu_button/menu_button.tscn" id="2_1xgvu"]
 [ext_resource type="PackedScene" uid="uid://cl7yicich6rhc" path="res://UI/Player/renderer/render_canvas.tscn" id="3_272bh"]
+[ext_resource type="PackedScene" uid="uid://cccn4mrilxa6b" path="res://UI/Menu/animation_controller/animation_controller.tscn" id="4_5vw27"]
 [ext_resource type="PackedScene" uid="uid://pyshfx6b4diu" path="res://UI/Menu/viewport_controller/viewport_controller.tscn" id="4_272bh"]
 [ext_resource type="PackedScene" uid="uid://bcqikq1wfgete" path="res://UI/Menu/material_controller/material_controller.tscn" id="5_46gs8"]
 [ext_resource type="PackedScene" uid="uid://bu6ghsc6p3e5c" path="res://UI/Menu/render_controller/render_controller.tscn" id="6_7mycd"]
@@ -117,7 +118,7 @@ void fragment()
 "
 metadata/_edit_res_path = "res://materials/final_palette.tres::Shader_ovm27"
 
-[sub_resource type="Image" id="Image_7mycd"]
+[sub_resource type="Image" id="Image_272bh"]
 data = {
 "data": PackedByteArray(0, 0, 0, 131, 131, 139, 222, 230, 238, 255, 255, 255, 123, 65, 65, 131, 90, 90, 156, 115, 115, 164, 164, 164, 189, 189, 189, 213, 213, 213, 197, 65, 65, 255, 98, 90, 222, 106, 98, 106, 90, 90, 164, 98, 90, 189, 148, 139, 222, 180, 164, 238, 213, 205, 238, 148, 115, 222, 148, 115, 255, 189, 131, 255, 197, 148, 255, 213, 180, 65, 57, 49, 205, 156, 82, 255, 197, 90, 189, 156, 90, 213, 180, 106, 189, 189, 131, 222, 205, 131, 238, 230, 164, 57, 82, 0, 57, 139, 49, 131, 197, 98, 180, 255, 131, 24, 164, 106, 65, 180, 131, 115, 197, 164, 164, 213, 197, 82, 139, 197, 98, 172, 238, 115, 189, 246, 16, 32, 57, 24, 41, 82, 41, 57, 98, 74, 115, 172, 98, 164, 222, 41, 49, 90, 57, 74, 123, 156, 180, 222, 189, 205, 230, 65, 74, 106, 98, 98, 123, 65, 49, 65, 98, 65, 82, 205, 65, 82),
 "format": "RGB8",
@@ -127,7 +128,7 @@ data = {
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_750vi"]
-image = SubResource("Image_7mycd")
+image = SubResource("Image_272bh")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4c57u"]
 resource_local_to_scene = true
@@ -170,9 +171,8 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_kmhnd")
-player_canvas_path = NodePath("Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas")
 file_button_path = NodePath("Mount/MarginContainer/MainWindow/MenuBar/FileButton")
-menu_button_path = NodePath("Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/RenderOptions/MenuButton")
+menu_button_path = NodePath("Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/RenderController/MenuButton")
 
 [node name="Mount" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -206,11 +206,12 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer"]
-custom_minimum_size = Vector2(600, 450)
+custom_minimum_size = Vector2(600, 512)
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="RenderCanvas" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer" instance=ExtResource("3_272bh")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="FrameSizeLabel" type="Label" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer"]
@@ -219,20 +220,8 @@ size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "512x512"
 
-[node name="TabContainer2" type="TabContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer"]
-custom_minimum_size = Vector2(425, 150)
+[node name="AnimationController" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer" instance=ExtResource("4_5vw27")]
 layout_mode = 2
-size_flags_vertical = 3
-current_tab = 0
-
-[node name="Animation" type="CenterContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/TabContainer2"]
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="AnimationTree" type="CenterContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/TabContainer2"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="Mount/MarginContainer/MainWindow/HSplitContainer"]
 custom_minimum_size = Vector2(500, 0)
@@ -244,26 +233,25 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 18
 
-[node name="ViewportOptions" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("4_272bh")]
+[node name="ViewportController" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("4_272bh")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="material_conntroller" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("5_46gs8")]
+[node name="MaterialController" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("5_46gs8")]
 layout_mode = 2
 mono = SubResource("ShaderMaterial_272bh")
 no_palette = SubResource("ShaderMaterial_kek77")
 palette = SubResource("ShaderMaterial_4c57u")
 normal = SubResource("ShaderMaterial_efxa6")
 
-[node name="RenderOptions" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("6_7mycd")]
+[node name="RenderController" parent="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer" instance=ExtResource("6_7mycd")]
 layout_mode = 2
 
-[connection signal="camera_position_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_camera_position_changed"]
-[connection signal="camera_rotation_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_camera_rotation_changed"]
-[connection signal="player_position_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_position_changed"]
-[connection signal="player_rotation_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_rotation_changed"]
-[connection signal="player_scale_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_scale_changed"]
-[connection signal="color_shader_active" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/material_conntroller" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_material_conntroller_color_shader_active"]
-[connection signal="material_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/material_conntroller" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_material_conntroller_material_changed"]
-[connection signal="render_start" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/RenderOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_render_options_render_start"]
-[connection signal="render_state_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/RenderOptions" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_render_options_render_state_changed"]
+[connection signal="camera_node_transform_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" to="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportController" method="_on_render_canvas_camera_node_transform_changed"]
+[connection signal="player_node_transform_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" to="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportController" method="_on_render_canvas_player_node_transform_changed"]
+[connection signal="camera_transform_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportController" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_camera_transform_changed"]
+[connection signal="player_transform_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/ViewportController" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_viewport_options_player_transform_changed"]
+[connection signal="color_shader_active" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/MaterialController" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_material_conntroller_color_shader_active"]
+[connection signal="material_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/MaterialController" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_material_conntroller_material_changed"]
+[connection signal="render_start" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/RenderController" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_render_options_render_start"]
+[connection signal="render_state_changed" from="Mount/MarginContainer/MainWindow/HSplitContainer/PanelContainer/VBoxContainer/RenderController" to="Mount/MarginContainer/MainWindow/HSplitContainer/VSplitContainer/PanelContainer/RenderCanvas" method="_on_render_options_render_state_changed"]

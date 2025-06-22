@@ -77,7 +77,7 @@ normal = ExtResource("5_fltih")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
-text = "Material / Shader"
+text = "Post-Processing"
 
 [node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2
@@ -111,6 +111,24 @@ text = "Color limit"
 [node name="NormalRender" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 text = "Normal render"
+
+[node name="ColorPalette" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="ColorPalette" type="Label" parent="ColorPalette"]
+layout_mode = 2
+text = "Color Palette"
+
+[node name="Label" type="Label" parent="ColorPalette"]
+layout_mode = 2
+text = "Empty"
+
+[node name="Button" type="Button" parent="ColorPalette"]
+layout_mode = 2
+text = "Search"
 
 [connection signal="toggled" from="ColorShader/BackgroundShader" to="." method="_on_background_shader_toggled"]
 [connection signal="button_up" from="HBoxContainer/MonoChrome" to="." method="_on_mono_chrome_button_up"]

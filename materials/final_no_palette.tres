@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://ba14cyrfsfjxj"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ba14cyrfsfjxj"]
 
 [sub_resource type="Shader" id="Shader_4u2f0"]
 code = "shader_type canvas_item;
@@ -28,11 +28,8 @@ void fragment(){
 }"
 metadata/_edit_res_path = "res://main.tscn::Shader_4u2f0"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_iv6ru"]
-
 [resource]
 resource_local_to_scene = true
 shader = SubResource("Shader_4u2f0")
-shader_parameter/view = SubResource("ViewportTexture_iv6ru")
 shader_parameter/limit = 32.0
 shader_parameter/thresh = 0.5
