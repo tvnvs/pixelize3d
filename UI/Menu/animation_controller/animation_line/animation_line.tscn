@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhqh33b3682gc"]
+
+[ext_resource type="Script" uid="uid://b0nddhc6meh23" path="res://UI/Menu/animation_controller/animation_line/animation_line.gd" id="1_2d7jc"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+script = ExtResource("1_2d7jc")
+
+[node name="AnimationControl" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="AnimationControl"]
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="AnimationControl/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+
+[node name="AnimationNameLabel" type="Label" parent="AnimationControl/HBoxContainer2/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Test"
+
+[node name="VSeparator" type="VSeparator" parent="AnimationControl"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AnimationControl"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="AnimationControl/HBoxContainer"]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="AnimationControl/HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Play"
