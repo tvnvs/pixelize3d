@@ -112,7 +112,3 @@ func _on_camera_position_transform_changed(_transform: Vector3) -> void:
 
 func _on_camera_rotation_transform_changed(_transform: Vector3) -> void:
 	_emit_camera_transform_changed()
-
-
-
-

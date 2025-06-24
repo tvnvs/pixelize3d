@@ -2833,7 +2833,6 @@ bones/74/rotation = Quaternion(-1.30386e-08, -6.79112e-08, 6.76364e-08, 1)
 bones/74/scale = Vector3(1, 1, 1)
 
 [node name="Kachujin" type="MeshInstance3D" parent="Armature/Skeleton3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55027, -0.0807285, 0.505757)
 gi_mode = 0
 mesh = SubResource("ArrayMesh_2ku3a")
 skin = SubResource("Skin_7jdbg")

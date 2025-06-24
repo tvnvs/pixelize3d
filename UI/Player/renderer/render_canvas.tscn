@@ -1,8 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://cl7yicich6rhc"]
+[gd_scene load_steps=7 format=3 uid="uid://cl7yicich6rhc"]
 
 [ext_resource type="Script" uid="uid://x2v6oqsje4d7" path="res://UI/Player/renderer/render_canvas.gd" id="1_8ji3a"]
 [ext_resource type="PackedScene" uid="uid://bk6kchpbd5gk3" path="res://UI/Player/player.tscn" id="2_th6co"]
 [ext_resource type="Script" uid="uid://d4lj27l7v5era" path="res://UI/Player/renderer/color_shader.gd" id="4_dfqqv"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_28txx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_80el8"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.427451, 1, 0.247059, 0.482353)
 
 [sub_resource type="Environment" id="Environment_ilbuc"]
 background_mode = 1
@@ -41,6 +48,11 @@ projection = 1
 size = 2.0
 near = 0.01
 
+[node name="DebugMesh" type="MeshInstance3D" parent="first_render/Viewport"]
+unique_name_in_owner = true
+mesh = SubResource("BoxMesh_28txx")
+surface_material_override/0 = SubResource("StandardMaterial3D_80el8")
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="first_render"]
 environment = SubResource("Environment_ilbuc")
 
@@ -69,5 +81,14 @@ anchor_mode = 0
 [node name="palette" type="Sprite2D" parent="."]
 position = Vector2(11, 502)
 
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1109.0
+offset_top = 11.0
+offset_right = 1150.0
+offset_bottom = 42.0
+text = "Test"
+
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="after_effect/after_viewport/ColorShader" to="." method="_on_color_shader_gui_input"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
