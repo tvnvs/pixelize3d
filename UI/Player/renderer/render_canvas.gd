@@ -109,37 +109,7 @@ func _build_file_name(animation_gen_name: String) -> String:
 		file_name = file_name.replacen(FILE_NAME_PLAYER_ROTATION_DEG_INT_PLACEHOLDER, "%03d" % int(floor(rotation_deg)))
 
 	return file_name
-
-
-
-#func get_all_animation_frames():
-#	var animation_names: Array
-#	var img_array: Array
-#	var collector_buffer: Array
-#	var old_player_transform: Transform3D = player_node.global_transform
-#	var img_buffer: Array[Array]           = []
-#	for anim in animation_player.get_animation_list():
-#		animation_player.assigned_animation = anim
-#		if state == RenderMode.ALL:
-#			collector_buffer.append_array(await capture_current_animation())
-#		if state == RenderMode.ONE:
-#			animation_names.append(anim)
-#			img_buffer.append(await capture_current_animation())
-#		if state == RenderMode.MULTIPLE_ANGLES:
-#			#render each direction as an array of images and then append it as an array within the image_buffer array
-#			var eight_buffer: Array
-#			animation_names.append(anim + "8")
-#			for i in 8:
-#				eight_buffer.append_array(await capture_current_animation())
-#				animation_player.seek(0.0)
-#				player_node.rotation_degrees.y += 45.0
-#			img_buffer.append(eight_buffer)
-#			player_node.global_transform = old_player_transform
-#	if state == RenderMode.ALL:
-#		animation_names.append("All")
-#		img_buffer.append(collector_buffer)
-#	img_array = collect_images(img_buffer, animation_names.size())
-#	return [img_array, animation_names]
+	
 
 func get_all_animation_frames()-> Array:
 	var animation_names: Array[String]
@@ -410,25 +380,18 @@ func _handle_mouse_motion_event(event: InputEventMouseMotion):
 		player_node.rotation += Vector3(move_vector.y, move_vector.x, 0)
 	elif viewport_edit_type == ViewportEditType.CAMERA:
 		var camera_angle_x_deg: float     = camera_node.rotation_degrees.x
-		var camera_angle_y_deg: float     = camera_node.rotation_degrees.y
 		var new_camera_angle_x_deg: float = clamp(camera_angle_x_deg + (1 * y), -89, 89)
-		var new_camera_angle_y_deg: float = clamp(camera_angle_y_deg + (1 * x), -89, 89)
-		#		var new_camera_angle_y_deg: float = 5.5
-
-		var camera_height: float   = camera_node.position.y
-		var camera_distance: float = camera_node.position.z
-
-		var hipotenuse: float    = camera_distance / cos(deg_to_rad(new_camera_angle_x_deg))
-		var new_value: float     = sqrt(hipotenuse*hipotenuse - camera_distance*camera_distance)
-		var player_height: float = 0
+		var new_value: float = calculate_camera_hight_for_angle(new_camera_angle_x_deg)
 
 		camera_node.rotation_degrees.x = new_camera_angle_x_deg
-		camera_node.position.y = (new_value if new_camera_angle_x_deg <0 else -new_value) + player_height
-		camera_height = new_value
+		camera_node.position.y = (new_value if new_camera_angle_x_deg <0 else -new_value)
 
+func calculate_camera_hight_for_angle(angle: float) -> float:
+	var camera_distance: float = camera_node.position.z
 
-#		camera_node.look_at(player_node.position, rot)
-
+	var hipotenuse: float    = camera_distance / cos(deg_to_rad(angle))
+	var new_value: float     = sqrt(hipotenuse*hipotenuse - camera_distance*camera_distance)
+	return new_value
 
 # Event Handling (External)
 func _on_render_options_render_state_changed(new_state: RenderMode, new_export_rotation_angles: int) -> void:
