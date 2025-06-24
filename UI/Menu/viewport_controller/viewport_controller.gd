@@ -33,9 +33,12 @@ func _emit_camera_transform_changed() -> void:
 func _on_front_view_preset_button_down() -> void:
 	camera_position_node.transform = Vector3(0, 0.511, 10)
 	camera_rotation_node.transform = Vector3(0, 0, 0)
+	
 	player_position_node.transform = Vector3(0, 0, 0)
+	player_rotation_node.transform = Vector3(0, 0, 0)
 
 	player_position_node._send_signal_changed()
+	player_rotation_node._send_signal_changed()
 	camera_position_node._send_signal_changed()
 	camera_rotation_node._send_signal_changed()
 
@@ -43,9 +46,12 @@ func _on_front_view_preset_button_down() -> void:
 func _on_isometric_preset_35_button_down() -> void:
 	camera_position_node.transform = Vector3(0, 7.662, 10)
 	camera_rotation_node.transform = Vector3(-35.564, 0, 0)
+	
 	player_position_node.transform = Vector3(0, 0, 0)
+	player_rotation_node.transform = Vector3(0, 0, 0)
 
 	player_position_node._send_signal_changed()
+	player_rotation_node._send_signal_changed()
 	camera_position_node._send_signal_changed()
 	camera_rotation_node._send_signal_changed()
 

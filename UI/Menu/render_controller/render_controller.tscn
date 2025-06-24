@@ -18,13 +18,15 @@ layout_mode = 2
 layout_mode = 2
 text = "Render Mode"
 flat = false
-item_count = 3
-popup/item_0/text = "seperate Animations"
+item_count = 4
+popup/item_0/text = "Seperate Animations"
 popup/item_0/id = 0
 popup/item_1/text = "All as a Spritesheet"
 popup/item_1/id = 1
 popup/item_2/text = "Eight directions"
 popup/item_2/id = 2
+popup/item_3/text = "Sixteen directions"
+popup/item_3/id = 3
 
 [node name="Label" type="Label" parent="RenderMode"]
 layout_mode = 0
@@ -33,6 +35,22 @@ offset_top = 3.0
 offset_right = 161.0
 offset_bottom = 26.0
 text = "Seperate Animations"
+
+[node name="SingleFileToggle" type="CheckBox" parent="."]
+visible = false
+layout_mode = 2
+button_pressed = true
+text = "Single File"
+flat = true
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Export File Pattern"
+
+[node name="FileNamePattern" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(200, 35)
+layout_mode = 2
+placeholder_text = "All.png"
 
 [node name="StartRender" type="Button" parent="."]
 auto_translate_mode = 2
@@ -67,5 +85,7 @@ access = 2
 filters = PackedStringArray("*.glb")
 show_hidden_files = true
 
+[connection signal="toggled" from="SingleFileToggle" to="." method="_on_single_file_toggle_toggled"]
+[connection signal="text_changed" from="FileNamePattern" to="." method="_on_file_name_pattern_text_changed"]
 [connection signal="button_down" from="StartRender" to="." method="_on_start_render_button_down"]
 [connection signal="dir_selected" from="MenuButton/FileDialog" to="." method="_on_file_dialog_dir_selected"]

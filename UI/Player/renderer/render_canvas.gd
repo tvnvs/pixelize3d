@@ -4,8 +4,16 @@ class_name RenderCanvas
 signal player_node_transform_changed(new_player_node_transform: TransformProperties)
 signal camera_node_transform_changed(new_camera_node_transform: TransformProperties)
 signal player_node_animations_changed(new_animation_names: Array[String])
-const MOUSE_BUTTON_MASK_WHEEL_UP: int   = 8
-const MOUSE_BUTTON_MASK_WHEEL_DOWN: int = 16
+const MOUSE_BUTTON_MASK_WHEEL_UP: int           = 8
+const MOUSE_BUTTON_MASK_WHEEL_DOWN: int         = 16
+const FILE_NAME_ANGLE_CONST      = "_angle_"
+const FILE_NAME_DEFAULT_PLACEHOLDER      = "{{default}}"
+const FILE_NAME_ANIMATION_NAME_PLACEHOLDER      = "{{animation}}"
+const FILE_NAME_PLAYER_ROTATION_DEG_PLACEHOLDER = "{{p_angle_deg}}"
+const FILE_NAME_PLAYER_ROTATION_DEG_INT_PLACEHOLDER = "{{p_angle_deg_int}}"
+
+
+
 
 
 class TransformProperties:
@@ -20,17 +28,21 @@ class TransformProperties:
 		self.scale = scale
 
 
-
 enum ViewportEditType{
 	PLAYER_POSITION,
 	PLAYER_ROTATION,
 	PLAYER_SCALE,
 	CAMERA
 }
+enum RenderMode{
+	ALL,
+	ONE,
+	MULTIPLE_ANGLES,
+}
 @export var fps: int = 16
 
 var frames_per_row: int = 25
-var state               = 'one'
+var state: RenderMode   = RenderMode.ONE
 
 @onready var after_viewport = $after_effect/after_viewport
 @onready var player_viewport = $first_render/Viewport
@@ -40,6 +52,8 @@ var state               = 'one'
 @onready var viewport_texture = player_viewport.get_texture()
 
 var animation_player: AnimationPlayer
+var export_file_name_pattern: String = ""
+var export_rotation_angles: int      = 1
 ## Edit Viewport Vars
 var viewport_edit_mode: bool = false
 var viewport_edit_type: ViewportEditType
@@ -48,6 +62,7 @@ var viewport_lock_y: bool    = false
 var viewport_reset_pos: bool = false
 var viewport_initial_position: Vector3
 var viewport_position_restore: Vector3
+var single_file_animation: bool = true
 
 
 func _ready() -> void:
@@ -63,59 +78,121 @@ func _update_player_references(new_player_node: Node3D):
 
 func render(outpu_dir: String):
 	var arr: Array = await get_all_animation_frames()
-	print(arr.size())
-	var anime_names := arr[1] as Array
 	var images      := arr[0] as Array
+	var anime_names := arr[1] as Array
 	for i in anime_names.size():
 		var img: Image
 		img = images[i]
-		var path = outpu_dir + anime_names[i] + ".png"
+		var path = outpu_dir + _build_file_name(anime_names[i])
 		img.save_png(path)
 
 
-func get_all_animation_frames():
-	var animation_names: Array
-	var img_array: Array
-	var collector_buffer: Array
-	var old_player_transform = player_node.global_transform
-	var img_buffer           = []
+func _build_file_name(animation_gen_name: String) -> String:
+	var file_name = animation_gen_name+".png"
+	if animation_gen_name == null or animation_gen_name.is_empty():
+		return file_name
+	var animation_name: String = animation_gen_name
+	var rotation_deg: float = player_node.rotation_degrees.y
+	
+	if animation_name.contains(FILE_NAME_ANGLE_CONST):
+		var split: PackedStringArray = animation_name.split(FILE_NAME_ANGLE_CONST)
+		animation_name = split[0]
+		rotation_deg = float(split[1])
+	file_name = export_file_name_pattern
+	if file_name.contains(FILE_NAME_DEFAULT_PLACEHOLDER):
+		file_name = file_name.replacen(FILE_NAME_DEFAULT_PLACEHOLDER, animation_gen_name)
+	if file_name.contains(FILE_NAME_ANIMATION_NAME_PLACEHOLDER):
+		file_name = file_name.replacen(FILE_NAME_ANIMATION_NAME_PLACEHOLDER, animation_name)
+	if file_name.contains(FILE_NAME_PLAYER_ROTATION_DEG_PLACEHOLDER):
+		file_name = file_name.replacen(FILE_NAME_PLAYER_ROTATION_DEG_PLACEHOLDER, "%.2f" % rotation_deg)
+	if file_name.contains(FILE_NAME_PLAYER_ROTATION_DEG_INT_PLACEHOLDER):
+		file_name = file_name.replacen(FILE_NAME_PLAYER_ROTATION_DEG_INT_PLACEHOLDER, "%03d" % int(floor(rotation_deg)))
+
+	return file_name
+
+
+
+#func get_all_animation_frames():
+#	var animation_names: Array
+#	var img_array: Array
+#	var collector_buffer: Array
+#	var old_player_transform: Transform3D = player_node.global_transform
+#	var img_buffer: Array[Array]           = []
+#	for anim in animation_player.get_animation_list():
+#		animation_player.assigned_animation = anim
+#		if state == RenderMode.ALL:
+#			collector_buffer.append_array(await capture_current_animation())
+#		if state == RenderMode.ONE:
+#			animation_names.append(anim)
+#			img_buffer.append(await capture_current_animation())
+#		if state == RenderMode.MULTIPLE_ANGLES:
+#			#render each direction as an array of images and then append it as an array within the image_buffer array
+#			var eight_buffer: Array
+#			animation_names.append(anim + "8")
+#			for i in 8:
+#				eight_buffer.append_array(await capture_current_animation())
+#				animation_player.seek(0.0)
+#				player_node.rotation_degrees.y += 45.0
+#			img_buffer.append(eight_buffer)
+#			player_node.global_transform = old_player_transform
+#	if state == RenderMode.ALL:
+#		animation_names.append("All")
+#		img_buffer.append(collector_buffer)
+#	img_array = collect_images(img_buffer, animation_names.size())
+#	return [img_array, animation_names]
+
+func get_all_animation_frames()-> Array:
+	var animation_names: Array[String]
+	var img_array: Array[Image]
+	var collector_buffer: Array[Image]
+	var img_buffer: Array[Array]      = []
 	for anim in animation_player.get_animation_list():
 		animation_player.assigned_animation = anim
-		if state == 'all':
-			collector_buffer.append_array(await capture_current_animation(animation_player))
-		if state == 'one':
+		if state == RenderMode.ALL:
+			collector_buffer.append_array(await capture_current_animation())
+		elif state == RenderMode.ONE:
 			animation_names.append(anim)
-			img_buffer.append(await capture_current_animation(animation_player))
-		if state == 'eight':
+			img_buffer.append(await capture_current_animation())
+		elif state == RenderMode.MULTIPLE_ANGLES:
 			#render each direction as an array of images and then append it as an array within the image_buffer array
-			var eight_buffer: Array
-			animation_names.append(anim + "8")
-			for i in 8:
-				eight_buffer.append_array(await capture_current_animation(animation_player))
+			var angle: float = 360.0 / export_rotation_angles
+			var old_player_transform: Transform3D = player_node.global_transform
+			var single_file_buffer: Array[Image]
+			player_node.rotation_degrees.y = 0
+			if single_file_animation:
+				animation_names.append(anim)
+			for i in export_rotation_angles:
+				var image_array: Array[Image] = await capture_current_animation()
+				if single_file_animation:
+					single_file_buffer.append_array(image_array)
+				else:
+					animation_names.append("%s%s%.2f" % [anim, FILE_NAME_ANGLE_CONST, player_node.rotation_degrees.y])
+					img_buffer.append(image_array)
 				animation_player.seek(0.0)
-				player_node.rotation_degrees.y += 45.0
-			img_buffer.append(eight_buffer)
+				player_node.rotation_degrees.y += angle
+
+			if single_file_animation:
+				img_buffer.append(single_file_buffer)
 			player_node.global_transform = old_player_transform
-	if state == 'all':
+	if state == RenderMode.ALL:
 		animation_names.append("All")
 		img_buffer.append(collector_buffer)
 	img_array = collect_images(img_buffer, animation_names.size())
 	return [img_array, animation_names]
 
 
-func collect_images(buffer: Array, size: int):
-	var images: Array
-	print(buffer.size())
-	for i in size:
+func collect_images(buffer: Array[Array], total_animations: int) -> Array[Image]:
+	var images: Array[Image]
+	for i in total_animations:
 		images.append(concatenate_images(buffer[i]))
 	return images
 
 
-func capture_current_animation(animation_player):
-	var image_buffer       = []
-	var step               = 1.0/fps
-	var animation_length   = animation_player.current_animation_length
-	var animation_position = 0
+func capture_current_animation() -> Array[Image]:
+	var image_buffer: Array[Image] = []
+	var step: float                = 1.0/fps
+	var animation_length: float    = animation_player.current_animation_length
+	var animation_position: float  = 0
 
 	while animation_position < animation_length:
 		animation_player.seek(animation_position, true)
@@ -126,29 +203,29 @@ func capture_current_animation(animation_player):
 	return image_buffer
 
 
-func concatenate_images(buffer):
-	var frame_size   = player_viewport.size
-	var frame_width  = frame_size.x
-	var frame_height = frame_size.y
-	var nb_of_rows   = int(pow(len(buffer), 0.5)) + 1
+func concatenate_images(buffer: Array[Image]) -> Image:
+	var frame_size        = player_viewport.size
+	var frame_width       = frame_size.x
+	var frame_height      = frame_size.y
+	var nb_of_rows: int   = int(pow(len(buffer), 0.5)) + 1
 	frames_per_row = nb_of_rows
-	var concat_img   = Image.create(frame_width * frames_per_row, frame_height * nb_of_rows, false, Image.FORMAT_RGBA8)
+	var concat_img: Image = Image.create(frame_width * frames_per_row, frame_height * nb_of_rows, false, Image.FORMAT_RGBA8)
 	var img_idx: int
 	for row_idx in range(nb_of_rows):
 		for col_idx in range(frames_per_row):
 			img_idx = col_idx + row_idx * frames_per_row
 			if img_idx > len(buffer) - 1: break
-			var src_rect = Rect2i(Vector2.ZERO, Vector2(frame_width, frame_height))
-			var dst      = Vector2i(col_idx*frame_width, row_idx*frame_height)
+			var src_rect: Rect2i = Rect2i(Vector2.ZERO, Vector2(frame_width, frame_height))
+			var dst: Vector2i    = Vector2i(col_idx*frame_width, row_idx*frame_height)
 			concat_img.blit_rect(buffer[img_idx], src_rect, dst)
 	return concat_img
 
 
-func capture_viewport():
+func capture_viewport() -> Image:
 	var viewport = after_viewport
 	if not color_shader_node.is_visible():
 		viewport = player_viewport
-	var img = viewport.get_texture().get_image()
+	var img: Image = viewport.get_texture().get_image()
 	img.convert(Image.FORMAT_RGBA8)
 	return img
 
@@ -260,10 +337,17 @@ func _check_for_postion_lock():
 		_edit_rest_player_position()
 	elif not is_lock_key_pressed and viewport_reset_pos:
 		viewport_reset_pos = false
-		_edit_restore_player_position()
+		if viewport_edit_mode:
+			_edit_restore_player_position()
 
 
 # Event Handling (Internal)
+
+
+func _on_color_shader_gui_input(event: InputEvent) -> void:
+	_on_gui_input(event)
+
+
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var is_mouse_wheel: bool = event.button_mask == MOUSE_BUTTON_MASK_WHEEL_UP or event.button_mask == MOUSE_BUTTON_MASK_WHEEL_DOWN
@@ -329,8 +413,8 @@ func _handle_mouse_motion_event(event: InputEventMouseMotion):
 		var camera_angle_y_deg: float     = camera_node.rotation_degrees.y
 		var new_camera_angle_x_deg: float = clamp(camera_angle_x_deg + (1 * y), -89, 89)
 		var new_camera_angle_y_deg: float = clamp(camera_angle_y_deg + (1 * x), -89, 89)
-#		var new_camera_angle_y_deg: float = 5.5
-		
+		#		var new_camera_angle_y_deg: float = 5.5
+
 		var camera_height: float   = camera_node.position.y
 		var camera_distance: float = camera_node.position.z
 
@@ -347,8 +431,9 @@ func _handle_mouse_motion_event(event: InputEventMouseMotion):
 
 
 # Event Handling (External)
-func _on_render_options_render_state_changed(new_state: String) -> void:
+func _on_render_options_render_state_changed(new_state: RenderMode, new_export_rotation_angles: int) -> void:
 	state = new_state
+	export_rotation_angles = new_export_rotation_angles
 
 
 func _on_viewport_options_player_transform_changed(_transform: TransformProperties) -> void:
@@ -381,3 +466,11 @@ func _on_render_options_render_start(output_dir: String) -> void:
 
 func _on_animation_controller_play_animation(animation_name: String) -> void:
 	play_animation(animation_name)
+
+
+func _on_render_controller_render_file_name_pattern_changed(new_file_name_pattern: String) -> void:
+	export_file_name_pattern = new_file_name_pattern
+
+
+func _on_render_controller_render_single_file_animation_changed(new_single_file_animation:bool) -> void:
+	single_file_animation = new_single_file_animation
