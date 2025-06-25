@@ -1,16 +1,16 @@
 extends VBoxContainer
 class_name ViewportController
 
-signal player_transform_changed(_transform: RenderCanvas.TransformProperties)
-signal camera_transform_changed(_transform: RenderCanvas.TransformProperties)
+signal player_transform_changed(_transform: TransformEvent)
+signal camera_transform_changed(_transform: TransformEvent)
 @onready var player_position_node: Vector3Input = %PlayerPosition
 @onready var player_rotation_node: Vector3Input = %PlayerRotation
 @onready var player_scale_node: Vector3Input = %PlayerScale
 @onready var camera_position_node: Vector3Input = %CameraPosition
 @onready var camera_rotation_node: Vector3Input = %CameraRotation
 
-var starting_player_node_transform: RenderCanvas.TransformProperties = null
-var starting_camera_node_transform: RenderCanvas.TransformProperties = null
+var starting_player_node_transform: TransformEvent = null
+var starting_camera_node_transform: TransformEvent = null
 
 
 func _ready() -> void:
@@ -22,11 +22,11 @@ func _ready() -> void:
 
 # Event Emiting
 func _emit_player_transform_changed() -> void:
-	player_transform_changed.emit(RenderCanvas.TransformProperties.new(player_position_node.transform, player_rotation_node.transform, player_scale_node.transform))
+	player_transform_changed.emit(TransformEvent.new(player_position_node.transform, player_rotation_node.transform, player_scale_node.transform))
 
 
 func _emit_camera_transform_changed() -> void:
-	camera_transform_changed.emit(RenderCanvas.TransformProperties.new(camera_position_node.transform, camera_rotation_node.transform, Vector3.ONE))
+	camera_transform_changed.emit(TransformEvent.new(camera_position_node.transform, camera_rotation_node.transform, Vector3.ONE))
 
 
 # Event Recieving
@@ -76,7 +76,7 @@ func _on_isometric_preset_45_button_down() -> void:
 	camera_rotation_node._send_signal_changed()
 
 
-func _on_render_canvas_player_node_transform_changed(new_player_node_properties: RenderCanvas.TransformProperties) -> void:
+func _on_render_canvas_player_node_transform_changed(new_player_node_properties: TransformEvent) -> void:
 	if not is_node_ready():
 		starting_player_node_transform = new_player_node_properties
 		return
@@ -85,7 +85,7 @@ func _on_render_canvas_player_node_transform_changed(new_player_node_properties:
 	player_scale_node.transform = new_player_node_properties.scale
 
 
-func _on_render_canvas_camera_node_transform_changed(new_camera_node_properties: RenderCanvas.TransformProperties) -> void:
+func _on_render_canvas_camera_node_transform_changed(new_camera_node_properties: TransformEvent) -> void:
 	if not is_node_ready():
 		starting_camera_node_transform = new_camera_node_properties
 		return

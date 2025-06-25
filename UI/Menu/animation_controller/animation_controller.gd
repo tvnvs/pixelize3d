@@ -1,7 +1,6 @@
 extends TabContainer
 
-signal play_animation(animation_name: String)
-signal test_animation(animation_name: String)
+signal animation_changed(event: AnimationEvent)
 
 @onready var animation_control_scene: PackedScene = preload("res://UI/Menu/animation_controller/animation_line/animation_line.tscn")
 @onready var animation_list_node: VBoxContainer = %AnimationList
@@ -36,7 +35,7 @@ func clear_list() -> void:
 		node.queue_free()
 
 func _on_animation_list_play_animation(animation_name: String):
-	play_animation.emit(animation_name)
+	animation_changed.emit(AnimationEvent.play(animation_name))
 
 func _on_animation_list_test_animation(animation_name: String):
-	test_animation.emit(animation_name)
+	animation_changed.emit(AnimationEvent.test(animation_name))
