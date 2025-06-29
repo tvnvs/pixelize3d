@@ -51,6 +51,7 @@ near = 0.01
 
 [node name="DebugMesh" type="MeshInstance3D" parent="MainViewportContainer/MainViewport"]
 unique_name_in_owner = true
+visible = false
 mesh = SubResource("BoxMesh_28txx")
 surface_material_override/0 = SubResource("StandardMaterial3D_80el8")
 

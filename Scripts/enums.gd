@@ -8,11 +8,23 @@ enum RenderMode{
 
 enum AnimationEventAction{
 	PLAY,
-	TEST
+	PLAYING,
+	TEST,
+	TESTING,
+	PAUSED,
+	STOP,
+	FINISHED,
+	CONTINUE,
 }
 
 enum ViewportEditType{
 	POSITION,
 	ROTATION,
 	SCALE
+}
+	
+enum AnimationPlayMode{
+	CURRENT,
+	EIGHT,
+	SIXTEEN
 }

@@ -26,6 +26,26 @@ metadata/_tab_index = 0
 layout_mode = 2
 theme_override_constants/separation = 0
 
+[node name="HBoxContainer" type="HBoxContainer" parent="Animation Preview/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Label" type="Label" parent="Animation Preview/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Test Options"
+
+[node name="AnimationPlayMode" type="OptionButton" parent="Animation Preview/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Current Direction"
+popup/item_0/id = 0
+popup/item_1/text = "Eight Directions"
+popup/item_1/id = 1
+popup/item_2/text = "Sixteen Directions"
+popup/item_2/id = 2
+
 [node name="Title" type="HBoxContainer" parent="Animation Preview/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
@@ -85,3 +105,5 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[connection signal="item_selected" from="Animation Preview/VBoxContainer/HBoxContainer/AnimationPlayMode" to="." method="_on_option_button_item_selected"]

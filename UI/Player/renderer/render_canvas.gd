@@ -6,7 +6,7 @@ const MOUSE_BUTTON_MASK_WHEEL_DOWN: int = 16
 signal player_node_animations_changed(new_animation_names: Array[String])
 signal player_node_transform_changed(new_player_node_transform: TransformEvent)
 signal camera_node_transform_changed(new_camera_node_transform: TransformEvent)
-
+signal animation_changed(event: AnimationEvent)
 @onready var shader_viewport: SubViewport = %ShaderViewport
 @onready var main_viewport_container: SubViewportContainer = %MainViewportContainer
 @onready var color_shader_node: ColorShader = %ColorShader
@@ -17,7 +17,12 @@ signal camera_node_transform_changed(new_camera_node_transform: TransformEvent)
 @onready var animation_player: AnimationPlayer = player_node.find_child("AnimationPlayer")
 @onready var viewport_texture = main_viewport.get_texture()
 
+var animation_playing: AnimationInfo         = null
 var mouse_drag_transform: MouseDragTransform = MouseDragTransform.new()
+var animation_play_mode: Enums.AnimationPlayMode
+var animation_paused: bool = false
+var animation_angles: Array[float]
+var current_animation_angles: Array[float]
 # AABB
 var player_mesh_aabb: AABB
 var is_player_aabb_out_of_bounds: bool = true
@@ -180,27 +185,98 @@ func _transform_ended(node: Node3D):
 # Player Animation
 func _on_animation_controller_animation_changed(event: AnimationEvent) -> void:
 	match event.action:
-		Enums.AnimationEventAction.PLAY: play_animation(event.animation_name)
-		Enums.AnimationEventAction.TEST: test_animation(event.animation_name)
+		Enums.AnimationEventAction.PLAY:
+			if event.is_test:
+				test_animation(event.animation_name)
+			else:
+				play_animation(event.animation_name)
+		Enums.AnimationEventAction.STOP:
+			stop_animation(event)
+		Enums.AnimationEventAction.CONTINUE:
+			animation_paused = false
 
 
-func play_animation(animation_name: String)-> void:
-	animation_player.play(animation_name)
+func _start_play_animation(animation_id: AnimationInfo) -> bool:
+	if animation_playing != null and animation_playing.equals(animation_id):
+		return false
+	if animation_playing != null:
+		if not animation_playing.is_test:
+			animation_player.stop()
+		animation_changed.emit(AnimationEvent.finished(animation_playing.animation_name, animation_playing.is_test))
+
+	animation_playing = animation_id
+	animation_changed.emit(AnimationEvent.playing(animation_id.animation_name, animation_id.is_test))
+	current_animation_angles = animation_angles
+	return true
+
+
+func play_animation(animation_name: String) -> void:
+	var animation_id: AnimationInfo = AnimationInfo.new(animation_name, false)
+	if not _start_play_animation(animation_id):
+		return
+	var angles: Array[float] = [player_node.rotation_degrees.y]
+	if animation_play_mode != Enums.AnimationPlayMode.CURRENT:
+		angles = current_animation_angles
+	animation_player.assigned_animation = animation_name
+	for angle in angles:
+		if angle == angles[current_animation_angles.size() - 1]:
+			animation_player.animation_finished.connect(animation_finished.bind(animation_id))
+		player_node.rotation_degrees.y = angle
+		animation_player.play(animation_name)
+		await get_tree().create_timer(animation_player.current_animation_length+0.1).timeout
+
+
+func stop_animation(_event: AnimationEvent) -> void:
+	if animation_playing == null:
+		return
+	animation_player.stop()
+	animation_changed.emit(AnimationEvent.finished(animation_playing.animation_name, animation_playing.is_test))
+	animation_playing = null
+
+
+func animation_finished(animation_name: String, animation_id: AnimationInfo) -> void:
+	if animation_playing != null and animation_playing.equals(animation_id):
+		animation_playing = null
+
+	if animation_player.animation_finished.is_connected(animation_finished):
+		animation_player.animation_finished.disconnect(animation_finished)
+	animation_changed.emit(AnimationEvent.finished(animation_name, animation_id.is_test))
+	debug_mesh_node.visible = false
 
 
 func test_animation(animation_name: String)-> void:
+	var animation_id: AnimationInfo = AnimationInfo.new(animation_name, true)
+
+	if not _start_play_animation(animation_id):
+		return
 	animation_player.assigned_animation = animation_name
 	var step: float               = 1.0/60
 	var animation_length: float   = animation_player.current_animation_length
-	var animation_position: float = 0
-
-	while animation_position < animation_length:
-		animation_player.seek(animation_position, true)
-		update_player_mesh_aabb()
-		if is_player_aabb_out_of_bounds:
-			return
-		animation_position += step
-		await get_tree().create_timer(step).timeout
+	var animation_position: float
+	var angles: Array[float] = [player_node.rotation_degrees.y]
+	if animation_play_mode != Enums.AnimationPlayMode.CURRENT:
+		angles = current_animation_angles
+		
+	for angle in angles:
+		animation_position = 0.0
+		player_node.rotation_degrees.y = angle
+		
+		while animation_position < animation_length:
+			if animation_id != animation_playing:
+				debug_mesh_node.visible = false
+				return
+			if animation_paused:
+				await get_tree().create_timer(step).timeout
+				continue
+			debug_mesh_node.visible = true
+			animation_player.seek(animation_position, true)
+			update_player_mesh_aabb()
+			if is_player_aabb_out_of_bounds:
+				animation_changed.emit(AnimationEvent.paused(animation_id.animation_name, animation_id.is_test))
+				animation_paused = true
+			animation_position += step
+			await get_tree().create_timer(step).timeout
+	animation_finished(animation_name, animation_id)
 
 
 ## Player Model
@@ -228,6 +304,21 @@ func load_new_player_model(new_model_path: String) -> Node3D:
 
 func _update_player_references(new_player_node: Node3D):
 	player_node = new_player_node
+	animation_player.animation_finished.disconnect(animation_finished)
 	animation_player = player_node.find_child("AnimationPlayer")
 	player_node_transform_changed.emit(TransformEvent.new(player_node.position, player_node.rotation_degrees, player_node.scale))
 	player_node_animations_changed.emit(animation_player.get_animation_list())
+
+
+func _on_animation_controller_animation_play_mode_changed(event: Enums.AnimationPlayMode) -> void:
+	animation_play_mode = event
+	animation_angles = []
+	match animation_play_mode:
+		Enums.AnimationPlayMode.EIGHT:
+			for i in 8:
+				animation_angles.push_back(45*i)
+		Enums.AnimationPlayMode.SIXTEEN:
+			for i in 16:
+				animation_angles.push_back(22.5*i)
+		Enums.AnimationPlayMode.CURRENT:
+			pass
