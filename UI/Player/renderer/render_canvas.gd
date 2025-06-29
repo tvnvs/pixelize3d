@@ -42,10 +42,11 @@ func _on_render_options_render_start(render_config: RenderConfig) -> void:
 
 func render(render_config: RenderConfig):
 	debug_mesh_node.hide()
+	
 	var viewport: SubViewport = shader_viewport
 	if not color_shader_node.is_visible():
 		viewport = main_viewport
-	var renderer    =  Renderer.new(render_config, viewport, main_viewport_container.animation_player, main_viewport_container.player_node)
+	var renderer    =  Renderer.new(render_config, viewport, animation_player, player_node)
 	var arr: Array  =  await renderer.get_all_animation_frames()
 	var images      := arr[Renderer.IMAGES_INDEX] as Array
 	var anime_names := arr[Renderer.ANIMATION_NAME_INDEX] as Array
@@ -53,9 +54,8 @@ func render(render_config: RenderConfig):
 	for i in anime_names.size():
 		var img: Image
 		img = images[i]
-		var path: String = render_config.build_file_path(anime_names[i], main_viewport_container.player_node.rotation_degrees.y)
+		var path: String = render_config.build_file_path(anime_names[i], player_node.rotation_degrees.y)
 		img.save_png(path)
-	debug_mesh_node.show()
 
 
 # Shader 
